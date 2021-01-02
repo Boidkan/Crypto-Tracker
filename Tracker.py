@@ -3,39 +3,50 @@ import json
 from CSVManager import CSVManager
 from datetime import datetime
 from math import ceil
+import sched, time
 
-file = open("Config.json")
 
-config = json.load(file)
+scheduler = sched.scheduler(time.time, time.sleep)
+twenty_four_hours = 24*60*60
 
-key = config["key"]
-symbols = list(sorted(config["crypto"].keys()))
+def addRow():
 
-params = ",".join(symbols)
+    file = open("Config.json")
 
-url = ' https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=' + params
-headers = {'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': key}
+    config = json.load(file)
 
-request = requests.get(url, headers = headers)
+    key = config["key"]
+    symbols = list(sorted(config["crypto"].keys()))
 
-data = json.loads(request.text)
+    params = ",".join(symbols)
 
-total = 0
-date = datetime.today().strftime("%m/%d/%y")
-values = [date]
+    url = ' https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=' + params
+    headers = {'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': key}
 
-for symbol in symbols:
-    price = data["data"][symbol]["quote"]["USD"]["price"]
-    amount = config["crypto"][symbol]
-    value = ceil(amount * price * 100) / 100.0
-    total += amount * price #Don't want to round total until everything is added up
-    values += [value]
+    request = requests.get(url, headers = headers)
 
-total = ceil(total * 100) / 100.0
-values += [total]
-titles = [""] + symbols + ["TOTAL"]
+    data = json.loads(request.text)
 
-csvManager = CSVManager()
-csvManager.write(titles, values)
+    total = 0
+    date = datetime.today().strftime("%m/%d/%y")
+    values = [date]
 
-print("Added:" + str(symbols))
+    for symbol in symbols:
+        price = data["data"][symbol]["quote"]["USD"]["price"]
+        amount = config["crypto"][symbol]
+        value = ceil(amount * price * 100) / 100.0
+        total += amount * price #Don't want to round total until everything is added up
+        values += [value]
+
+    total = ceil(total * 100) / 100.0
+    values += [total]
+    titles = [""] + symbols + ["TOTAL"]
+
+    csv_manager = CSVManager()
+    csv_manager.write(titles, values)
+
+    print("Added:" + str(symbols))
+    scheduler.enter(twenty_four_hours, 1, addRow)
+
+scheduler.enter(0, 1, addRow)
+scheduler.run()
