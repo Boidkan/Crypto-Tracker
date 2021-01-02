@@ -5,15 +5,14 @@ from datetime import datetime
 from math import ceil
 import sched, time
 
+file = open("Config.json")
+config = json.load(file)
+
 
 scheduler = sched.scheduler(time.time, time.sleep)
-twenty_four_hours = 24*60*60
+timer = config["frequency_seconds"]
 
 def addRow():
-
-    file = open("Config.json")
-
-    config = json.load(file)
 
     key = config["key"]
     symbols = list(sorted(config["crypto"].keys()))
@@ -46,7 +45,7 @@ def addRow():
     csv_manager.write(titles, values)
 
     print("Added:" + str(symbols))
-    scheduler.enter(twenty_four_hours, 1, addRow)
+    scheduler.enter(timer, 1, addRow)
 
 scheduler.enter(0, 1, addRow)
 scheduler.run()
