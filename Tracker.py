@@ -7,11 +7,8 @@ class Tracker:
     def __init__(self, file_path):
         file = open(file_path)
         self.config = json.load(file)
-
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.timer = self.config["frequency_seconds"]
-        print(file_path)
-        print(self.config)
 
     def writeNewValues(self):
         data = RequestManager.getPrices(self.config)
