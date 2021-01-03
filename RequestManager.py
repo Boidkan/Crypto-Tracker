@@ -4,11 +4,8 @@ from datetime import datetime
 from math import ceil
 
 class RequestManager:
-    def getPrices():
-    
-        file = open("Config.json")
-        config = json.load(file)
-        
+    def getPrices(config):
+
         key = config["key"]
         symbols = list(sorted(config["crypto"].keys()))
 

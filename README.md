@@ -1,15 +1,16 @@
 # Crypto-Tracker
 Simple script for tracking daily changes in crypto assets.
 
-This scipt will continuously run and will generate and updated a csv file with prices for your crypto assets over time.
+This script will continuously run and will generate and updated a csv file with prices for your crypto assets over time.
 
 ## How to run
 
-This used python 3 so you might need to use the command `python3 CryptoTracker.py`. You will also need to create a config json file and add it to the directory.
+This used python 3 so you might need to use the command `python3 CryptoTracker.py`. You will also need to create a config json file and add it to the directory. 
+Or you can specify the config file path when running the script like so `python3 CryptoTracker ~/YOUR_DIR/SOME_CONFIG_FILE.json` 
 
 ## Config.json
 
-This script expect to have a Config.json file in the same directory. This is what data it expects:
+If you don't specify a config file this script expect to have a Config.json file in the same directory. This is what data it expects:
 
 ```{
   "key": "YOUR_API_KEY",

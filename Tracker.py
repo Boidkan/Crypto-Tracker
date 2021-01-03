@@ -4,14 +4,17 @@ import sched, time, json
 
 
 class Tracker:
-    file = open("Config.json")
-    config = json.load(file)
+    def __init__(self, file_path):
+        file = open(file_path)
+        self.config = json.load(file)
 
-    scheduler = sched.scheduler(time.time, time.sleep)
-    timer = config["frequency_seconds"]
+        self.scheduler = sched.scheduler(time.time, time.sleep)
+        self.timer = self.config["frequency_seconds"]
+        print(file_path)
+        print(self.config)
 
     def writeNewValues(self):
-        data = RequestManager.getPrices()
+        data = RequestManager.getPrices(self.config)
         CSVManager.write(data[0], data[1])
         print("---------------- Added Line ----------------- ")
         print(data[0])
