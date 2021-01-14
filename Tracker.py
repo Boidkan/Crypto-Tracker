@@ -5,13 +5,16 @@ import sched, time, json
 
 class Tracker:
     def __init__(self, file_path):
+        self.file_path = file_path
         file = open(file_path)
-        self.config = json.load(file)
+        config = json.load(file)
         self.scheduler = sched.scheduler(time.time, time.sleep)
-        self.timer = self.config["frequency_seconds"]
+        self.timer = config["frequency_seconds"]
 
     def writeNewValues(self):
-        data = RequestManager.getPrices(self.config)
+        file = open(self.file_path)
+        config = json.load(file)
+        data = RequestManager.getPrices(config)
         CSVManager.write(data[0], data[1])
         print("---------------- Added Line ----------------- ")
         print(data[0])
